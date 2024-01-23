@@ -10,21 +10,21 @@ private:
 public:
 
 	Point();
-	Point(int newX, int newY);
+	Point(const int newX,const int newY);
 
 	// Getter functions
 	int getX() const;
 	int getY() const;
 
 	// Setter functions
-	void setXAndY(int newX, int newY);
-	void setX(int newX);
-	void setY(int newY);
+	void setXAndY(const int newX,const int newY);
+	void setX(const int newX);
+	void setY(const int newY);
 
 	// add functions
-	void addToX(int addX);
-	void addToY(int addY);
-	void addToXAndY(int addX, int addY);
+	void addToX(const int addX);
+	void addToY(const int addY);
+	void addToXAndY(const int addX, const int addY);
 };
 
 #endif
