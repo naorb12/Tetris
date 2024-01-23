@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+
 enum blockName
 {
 	I, J, L, O, S, T, Z
@@ -20,6 +21,7 @@ private:
 
 public:
 	Point tetrimino[GameConfig::PIECE_SIZE];
+	
 	//set piece
 	void buildpiece();
 
@@ -28,7 +30,6 @@ public:
 	void moveleft(const Board& board);
 	void rotateClockwise(const Board& board);
 	void rotateCounterClockwise(const Board& board);
-
 
 };
 #endif
