@@ -1,6 +1,7 @@
 #include "General.h"
 
-void gotoxy(int x, int y)
+// Used for printing the game
+void gotoxy(const int x,const int y)
 {
 	HANDLE hConsoleOutput;
 	COORD dwCursorPosition;
@@ -13,12 +14,13 @@ void gotoxy(int x, int y)
 	// Hide cursor
 	CONSOLE_CURSOR_INFO ConCurInf;
 	hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
-	ConCurInf.dwSize = 10;
+	ConCurInf.dwSize = DOWN;
 	ConCurInf.bVisible = FALSE;
 	SetConsoleCursorInfo(hConsoleOutput, &ConCurInf);
 
 }
 
+// Clears the screen
 void clrscr()
 {
 	system("cls");
