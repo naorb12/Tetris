@@ -5,16 +5,18 @@
 #include "Piece.h"
 
 
-class Board {
+class Board 
+{
+	bool isRowFull(const int row) const;
+	void shiftRowsDown(const int startRow);
+
 public:
 	char board[GameConfig::GAME_HEIGHT][GameConfig::GAME_WIDTH];
 
 	void initBoard();
-	bool isRowFull(int row);
-	void shiftRowsDown(int startRow);
 	void clearRows(const Piece& piece);
-	void printBoard(const int min);
-	void insertPiece(Piece piece); 
+	void printBoard(const int min) const;
+	void insertPiece(const Piece& piece);
 
 };
 
