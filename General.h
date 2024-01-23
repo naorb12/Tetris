@@ -5,9 +5,12 @@
 #include <process.h> // for system
 #include <iostream>
 #include <conio.h>
+
 using namespace std;
 
-void gotoxy(int, int);
+constexpr int DOWN = 10;
+
+void gotoxy(const int, const int);
 void clrscr();
 
 #endif // _Genearal
