@@ -6,13 +6,13 @@
 
 
 class Player {
-	 // maybe this is the current piece handed to the player
 
 public:
-	Board board;			// might be private
+	Board board;			
 	Piece currPiece;
 	bool isPieceHit = true;
 
+	// This function initialise a PLAYER'S board
 	void setBoard() { this->board.initBoard(); }
 };
 
