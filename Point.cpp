@@ -1,7 +1,7 @@
 #include "Point.h"
 
-Point::Point() : x(0), y(0) {}
-Point::Point(int newX, int newY) : x(newX), y(newY) {}
+Point::Point() : x(0), y(0) {} // default ctor
+Point::Point(const int newX,const int newY) : x(newX), y(newY) {} // copy ctor
 
 // Getter functions
 int Point::getX() const{
@@ -13,26 +13,27 @@ int Point::getY() const{
 }
 
 // Setter functions
-void Point::setXAndY(int newX, int newY) {
+void Point::setXAndY(const int newX, const int newY) {
 	x = newX;
 	y = newY;
 }
-void Point::setX(int newX) {
+void Point::setX(const int newX) {
 	x = newX;
 }
-void Point::setY(int newY) {
+void Point::setY(const int newY) {
 	y = newY;
 }
+
 // add functions
-void Point::addToX(int addX)
+void Point::addToX(const int addX)
 {
 	x += addX;
 }
-void Point::addToY(int addY)
+void Point::addToY(const int addY)
 {
 	y += addY;
 }
-void Point::addToXAndY(int addX, int addY)
+void Point::addToXAndY(const int addX, const int addY)
 {
 	x += addX;
 	y += addY;
