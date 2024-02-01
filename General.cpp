@@ -1,7 +1,7 @@
 #include "General.h"
 
 // Used for printing the game
-void gotoxy(const int x,const int y)
+void gotoxy(const int x, const int y)
 {
 	HANDLE hConsoleOutput;
 	COORD dwCursorPosition;
@@ -17,6 +17,17 @@ void gotoxy(const int x,const int y)
 	ConCurInf.dwSize = DOWN;
 	ConCurInf.bVisible = FALSE;
 	SetConsoleCursorInfo(hConsoleOutput, &ConCurInf);
+
+}
+
+void drawPoint(const int x, const int y, int backColor)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), backColor);
+	gotoxy(x, y);
+	if (backColor == BACKGROUND_INTENSITY)
+		cout << GameConfig::FILLED_CELL;
+	else
+		cout << GameConfig::EMPTY_CELL;
 
 }
 
