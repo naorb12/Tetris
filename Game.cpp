@@ -45,28 +45,14 @@ bool Game::process()
 		if (p1.isPieceHit == true)
 		{
 			for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
-			{
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_INTENSITY);
-				gotoxy(p1.currPiece.tetrimino[i].getX() + GameConfig::PIECE_X, p1.currPiece.tetrimino[i].getY());
-				cout << GameConfig::FILLED_CELL;
-			}
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-			p1.board.insertPiece(p1.currPiece);
-			p1.board.clearRows(p1.currPiece);
-			p1.currPiece.buildpiece();
+				drawPoint(p1.currPiece.tetrimino[i].getX() + GameConfig::PIECE_X, p1.currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
+			performHit(p1);
 		}
 		if (p2.isPieceHit == true)
 		{
 			for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
-			{
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_INTENSITY);
-				gotoxy(p2.currPiece.tetrimino[i].getX() + GameConfig::P2_X + GameConfig::PIECE_X, p2.currPiece.tetrimino[i].getY());
-				cout << GameConfig::FILLED_CELL;
-			}
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-			p2.board.insertPiece(p2.currPiece);
-			p2.board.clearRows(p2.currPiece);
-			p2.currPiece.buildpiece();
+				drawPoint(p2.currPiece.tetrimino[i].getX() + GameConfig::P2_X + GameConfig::PIECE_X, p2.currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
+			performHit(p2);
 		}
 
 		movePieces(&ch1, &ch2);
@@ -76,6 +62,14 @@ bool Game::process()
 	}
 
 	return winner;
+}
+
+void Game::performHit(Player& player)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	player.board.insertPiece(player.currPiece);
+	player.board.clearRows(player.currPiece);
+	player.currPiece.buildpiece();
 }
 
 // This function draws the borders of the boards
@@ -190,7 +184,7 @@ void Game::startNewGame()
 int Game::printMenu(bool gameFinished) const
 {
 	clrscr();
-	if(gameFinished == true)
+	if (gameFinished == true)
 		cout << "Welcome to the TETRIS game!\n\n";
 	cout << "(1) Start a new game" << endl;
 	if (gameFinished == false)
@@ -236,25 +230,19 @@ void Game::movePieces(char* ch1, char* ch2)
 	p1.board.printBoard(0);
 	p2.board.printBoard(GameConfig::P2_X);
 
-	 
+
 	for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
 	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_INTENSITY);
-		gotoxy(p1.currPiece.tetrimino[i].getX() + GameConfig::PIECE_X, p1.currPiece.tetrimino[i].getY());
-		cout << GameConfig::FILLED_CELL;
-		gotoxy(p2.currPiece.tetrimino[i].getX() + GameConfig::P2_X + GameConfig::PIECE_X, p2.currPiece.tetrimino[i].getY());
-		cout << GameConfig::FILLED_CELL;
-		
+		drawPoint(p1.currPiece.tetrimino[i].getX() + GameConfig::PIECE_X, p1.currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
+		drawPoint(p2.currPiece.tetrimino[i].getX() + GameConfig::P2_X + GameConfig::PIECE_X, p2.currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
 	}
 
 	getMove(ch1, ch2);
 	for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
 	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_GREEN|FOREGROUND_BLUE);
-		gotoxy(p1.currPiece.tetrimino[i].getX() + GameConfig::PIECE_X, p1.currPiece.tetrimino[i].getY());
-		cout << GameConfig::EMPTY_CELL;
-		gotoxy(p2.currPiece.tetrimino[i].getX() + GameConfig::P2_X + GameConfig::PIECE_X, p2.currPiece.tetrimino[i].getY());
-		cout << GameConfig::EMPTY_CELL;
+		drawPoint(p1.currPiece.tetrimino[i].getX() + GameConfig::PIECE_X, p1.currPiece.tetrimino[i].getY(), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		drawPoint(p2.currPiece.tetrimino[i].getX() + GameConfig::P2_X + GameConfig::PIECE_X, p2.currPiece.tetrimino[i].getY(), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
 	}
 	performMove(ch1, ch2);
 
@@ -270,7 +258,7 @@ void Game::getMove(char* ch1, char* ch2) const
 	{
 		char ch = _getch();
 
-		if (!*ch1 && (ch == left1 || ch == LEFT1 || ch == right1 || ch == RIGHT1 
+		if (!*ch1 && (ch == left1 || ch == LEFT1 || ch == right1 || ch == RIGHT1
 			|| ch == rotateclock1 || ch == ROTATECLOCK1 || ch == rotatecounterclock1 || ch == ROTATECOUNTERCLOCK1 || ch == drop1 || ch == DROP1 || ch == ESCAPE))
 		{
 			*ch1 = ch;
