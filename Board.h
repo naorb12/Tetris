@@ -11,7 +11,7 @@ class Board
 	void shiftRowsDown(const int startRow);
 
 public:
-	char board[GameConfig::GAME_HEIGHT][GameConfig::GAME_WIDTH];
+	char board[GameConfig::GAME_HEIGHT][GameConfig::GAME_WIDTH]; // move to private. use get() and set()
 
 	void initBoard();
 	void clearRows(const Piece& piece);
