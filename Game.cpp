@@ -1,5 +1,6 @@
 #include "Game.h"
 
+using namespace std;
 
 // main game function, which contains the menu
 void Game::run()
@@ -11,10 +12,20 @@ void Game::run()
 	{
 
 		sign = printMenu(gameFinished);
+		if (gameFinished)
+			deletePlayers();
 		switch (sign)
 		{
-		case startGame:
-			startNewGame();
+		case startGameHvsH:
+			startNewGame(startGameHvsH);
+			gameFinished = process();
+			break;
+		case startGameHvsPC:
+			startNewGame(startGameHvsPC);
+			gameFinished = process();
+			break;
+		case startGamePCvsPC:
+			startNewGame(startGamePCvsPC);
 			gameFinished = process();
 			break;
 		case continueGame:
@@ -39,19 +50,19 @@ bool Game::process()
 	ch1 = ch2 = NULL_CHAR;
 	while (winner == false && ch1 != ESCAPE && ch2 != ESCAPE)   // game loop
 	{
-		p1.isPieceHit = checkHit(p1);
-		p2.isPieceHit = checkHit(p2);
+		p1->isPieceHit = checkHit(*p1);
+		p2->isPieceHit = checkHit(*p2);
 		// check if piece hit & build new piece
-		if (p1.isPieceHit == true)
+		if (p1->isPieceHit == true)
 		{
 			for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
-				drawPoint(p1.currPiece.tetrimino[i].getX() + GameConfig::PIECE_X, p1.currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
+				drawPoint(p1->currPiece.tetrimino[i].getX() + GameConfig::PIECE_X, p1->currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
 			performHit(p1, 0);
 		}
-		if (p2.isPieceHit == true)
+		if (p2->isPieceHit == true)
 		{
 			for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
-				drawPoint(p2.currPiece.tetrimino[i].getX() + GameConfig::P2_X + GameConfig::PIECE_X, p2.currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
+				drawPoint(p2->currPiece.tetrimino[i].getX() + GameConfig::P2_X + GameConfig::PIECE_X, p2->currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
 			performHit(p2, GameConfig::P2_X);
 		}
 
@@ -64,12 +75,12 @@ bool Game::process()
 	return winner;
 }
 
-void Game::performHit(Player& player, const int playerOffset)
+void Game::performHit(Player* player, const int playerOffset)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	player.board.insertPiece(player.currPiece, playerOffset);
-	player.board.clearRows(player.currPiece);
-	player.currPiece.buildpiece();
+	player->board.insertPiece(player->currPiece, playerOffset);
+	player->board.clearRows(player->currPiece);
+	player->currPiece.buildpiece();
 }
 
 // This function draws the borders of the boards
@@ -116,7 +127,7 @@ bool Game::checkHit(const Player& player) const
 		if (player.currPiece.tetrimino[i].getY() == GameConfig::GAME_HEIGHT - 1)
 			return true;
 
-		if (player.board.board[player.currPiece.tetrimino[i].getY() + 1][player.currPiece.tetrimino[i].getX()] == GameConfig::FILLED_CELL)
+		if (player.board.getBoardPoint(player.currPiece.tetrimino[i].getY() + 1, player.currPiece.tetrimino[i].getX()) == GameConfig::FILLED_CELL)
 			return true;
 	}
 
@@ -131,9 +142,9 @@ bool Game::checkWinner() const
 	p1Win = p2Win = false;
 	for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
 	{
-		if (p1.board.board[p1.currPiece.tetrimino[i].getY() + 1][p1.currPiece.tetrimino[i].getX()] == GameConfig::FILLED_CELL && p1.currPiece.tetrimino[i].getY() <= 1)
+		if (p1->board.getBoardPoint(p1->currPiece.tetrimino[i].getY() + 1, p1->currPiece.tetrimino[i].getX()) == GameConfig::FILLED_CELL && p1->currPiece.tetrimino[i].getY() <= 1)
 			p2Win = true;
-		if (p2.board.board[p2.currPiece.tetrimino[i].getY() + 1][p2.currPiece.tetrimino[i].getX()] == GameConfig::FILLED_CELL && p2.currPiece.tetrimino[i].getY() <= 1)
+		if (p2->board.getBoardPoint(p2->currPiece.tetrimino[i].getY() + 1, p2->currPiece.tetrimino[i].getX()) == GameConfig::FILLED_CELL && p2->currPiece.tetrimino[i].getY() <= 1)
 			p1Win = true;
 	}
 
@@ -164,47 +175,101 @@ bool Game::checkWinner() const
 }
 
 // This function initialises a new game for 2 players
-void Game::startNewGame()
+void Game::startNewGame(const int gameType)
 {
-
 	clrscr();
-	p1.setBoard();
-	p2.setBoard();
+	switch (gameType)
+	{ 
+	case startGameHvsH:
+		p1 = new HumanP;
+		p2 = new HumanP;
+			break;
+	case startGameHvsPC:
+		p1 = new HumanP;
+		p2 = new ComputerP;
+		break;
+	case startGamePCvsPC:
+		p1 = new ComputerP;
+		p2 = new ComputerP;
+		break;
+	default:
+		break;
+	}
+	p1->setBoard();
+	p2->setBoard();
 
 	winner = false;
-	p1.isPieceHit = p2.isPieceHit = true;
+	p1->isPieceHit = p2->isPieceHit = true;
 
-	p1.currPiece.buildpiece();
-	p2.currPiece.buildpiece();
+	p1->currPiece.buildpiece();
+	p2->currPiece.buildpiece();
 
 	drawBorders();
 }
 
-// This functions prints the menu and gets input from user
-int Game::printMenu(bool gameFinished) const
+int Game::chooseLevel()const
 {
 	clrscr();
-	if (gameFinished == true)
-		cout << "Welcome to the TETRIS game!\n\n";
-	cout << "(1) Start a new game" << endl;
-	if (gameFinished == false)
-		cout << "(2) Continue a paused game" << endl;
-	cout << "(8) Present instructions and keys" << endl;
-	cout << "(9) EXIT" << endl;
-
+	cout << "Please choose the computer level:" << endl;
+	cout << "(1) NOVICE" << endl;
+	cout << "(2) GOOD" << endl;
+	cout << "(3) BEST" << endl;
 	int select = 0;
 	while (select == 0)
 	{
 		select = _getch() - '0';
 		switch (select)
 		{
-		case startGame:
+		case NOVICE+1:
 			break;
-		case continueGame:
-			if (gameFinished == true)
-				select = 0;
-			else
-				break;
+		case GOOD+1:
+			break;
+		case BEST + 1:
+			break;
+		default:
+			select = 0;
+			break;
+		}
+	}
+	return select - 1;
+
+}
+
+// This functions prints the menu and gets input from user
+int Game::printMenu(bool gameFinished) 
+{
+	clrscr();
+	if (gameFinished == true)
+		cout << "Welcome to the TETRIS game!\n\n";
+	cout << "(1) Start a new game - Human vs Human" << endl;
+	cout << "(2) Start a new game - Human vs Computer" << endl;
+	cout << "(3) Start a new game - Computer vs Computer" << endl;
+	if (gameFinished == false)
+		cout << "(4) Continue a paused game" << endl;
+	cout << "(8) Present instructions and keys" << endl;
+	cout << "(9) EXIT" << endl;
+
+	int select = 0;
+	int level;
+	while (select == 0)
+	{
+		select = _getch() - '0';
+		switch (select)
+		{
+		case startGameHvsH:
+			p1 = new HumanP;
+			p2 = new HumanP;
+			break;
+		case startGameHvsPC:
+			level = chooseLevel();
+			p1 = new HumanP;
+			p2 = new ComputerP(level);
+			break;
+		case startGamePCvsPC:
+			level = chooseLevel();
+			p1 = new ComputerP(level);
+			p2 = new ComputerP(level);
+			break;
 		case instructions:
 			break;
 		case exitGame:
@@ -217,8 +282,11 @@ int Game::printMenu(bool gameFinished) const
 	}
 	clrscr();
 	drawBorders();
-	p1.board.printBoard(0);
-	p2.board.printBoard(GameConfig::P2_X);
+	if (p1 && p2)
+	{
+		p1->board.printBoard(0);
+		p2->board.printBoard(GameConfig::P2_X);
+	}
 	return select;
 }
 
@@ -227,21 +295,21 @@ void Game::movePieces(char* ch1, char* ch2)
 {
 	*ch1 = *ch2 = NULL_CHAR;
 	drawBorders();
-	p1.board.printBoard(0);
-	p2.board.printBoard(GameConfig::P2_X);
+	p1->board.printBoard(0);
+	p2->board.printBoard(GameConfig::P2_X);
 
 
 	for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
 	{
-		drawPoint(p1.currPiece.tetrimino[i].getX() + GameConfig::PIECE_X, p1.currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
-		drawPoint(p2.currPiece.tetrimino[i].getX() + GameConfig::P2_X + GameConfig::PIECE_X, p2.currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
+		drawPoint(p1->currPiece.tetrimino[i].getX() + GameConfig::PIECE_X, p1->currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
+		drawPoint(p2->currPiece.tetrimino[i].getX() + GameConfig::P2_X + GameConfig::PIECE_X, p2->currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
 	}
 
 	getMove(ch1, ch2);
 	for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
 	{
-		drawPoint(p1.currPiece.tetrimino[i].getX() + GameConfig::PIECE_X, p1.currPiece.tetrimino[i].getY(), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		drawPoint(p2.currPiece.tetrimino[i].getX() + GameConfig::P2_X + GameConfig::PIECE_X, p2.currPiece.tetrimino[i].getY(), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		drawPoint(p1->currPiece.tetrimino[i].getX() + GameConfig::PIECE_X, p1->currPiece.tetrimino[i].getY(), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		drawPoint(p2->currPiece.tetrimino[i].getX() + GameConfig::P2_X + GameConfig::PIECE_X, p2->currPiece.tetrimino[i].getY(), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
 	}
 	performMove(ch1, ch2);
@@ -261,12 +329,12 @@ void Game::getMove(char* ch1, char* ch2) const
 		if (!*ch1 && (ch == left1 || ch == LEFT1 || ch == right1 || ch == RIGHT1
 			|| ch == rotateclock1 || ch == ROTATECLOCK1 || ch == rotatecounterclock1 || ch == ROTATECOUNTERCLOCK1 || ch == drop1 || ch == DROP1 || ch == ESCAPE))
 		{
-			*ch1 = ch;
+			p1->alterMove(ch1, ch);
 		}
 		else if (!*ch1 && (ch == left2 || ch == LEFT2 || ch == right2 || ch == RIGHT2
 			|| ch == rotateclock2 || ch == ROTATECLOCK2 || ch == rotatecounterclock2 || ch == ROTATECOUNTERCLOCK2 || ch == drop2 || ch == DROP2 || ch == ESCAPE))
 		{
-			*ch2 = ch;
+			p2->alterMove(ch2, ch);
 		}
 	}
 
@@ -280,19 +348,19 @@ void Game::performMove(char* ch1, char* ch2)
 	switch (*ch1)
 	{
 	case left1: case LEFT1:
-		p1.currPiece.moveleft(p1.board);
+		p1->currPiece.moveleft(p1->board);
 		break;
 	case right1: case RIGHT1:
-		p1.currPiece.moveRight(p1.board);
+		p1->currPiece.moveRight(p1->board);
 		break;
 	case rotateclock1: case ROTATECLOCK1:
-		p1.currPiece.rotateClockwise(p1.board);
+		p1->currPiece.rotateClockwise(p1->board);
 		break;
 	case rotatecounterclock1: case ROTATECOUNTERCLOCK1:
-		p1.currPiece.rotateCounterClockwise(p1.board);
+		p1->currPiece.rotateCounterClockwise(p1->board);
 		break;
 	case drop1: case DROP1:
-		drop(p1);
+		drop(*p1);
 		break;
 	default:
 		break;
@@ -301,19 +369,19 @@ void Game::performMove(char* ch1, char* ch2)
 	switch (*ch2)
 	{
 	case left2: case LEFT2:
-		p2.currPiece.moveleft(p2.board);
+		p2->currPiece.moveleft(p2->board);
 		break;
 	case right2: case RIGHT2:
-		p2.currPiece.moveRight(p2.board);
+		p2->currPiece.moveRight(p2->board);
 		break;
 	case rotateclock2: case ROTATECLOCK2:
-		p2.currPiece.rotateClockwise(p2.board);
+		p2->currPiece.rotateClockwise(p2->board);
 		break;
 	case rotatecounterclock2: case ROTATECOUNTERCLOCK2:
-		p2.currPiece.rotateCounterClockwise(p2.board);
+		p2->currPiece.rotateCounterClockwise(p2->board);
 		break;
 	case drop2: case DROP2:
-		drop(p2);
+		drop(*p2);
 		break;
 	default:
 		break;
@@ -323,9 +391,9 @@ void Game::performMove(char* ch1, char* ch2)
 	for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
 	{
 		if (*ch1 != drop1 && *ch1 != DROP1)
-			p1.currPiece.tetrimino[i].addToY(1);
+			p1->currPiece.tetrimino[i].addToY(1);
 		if (*ch2 != drop2 && *ch2 != DROP2)
-			p2.currPiece.tetrimino[i].addToY(1);
+			p2->currPiece.tetrimino[i].addToY(1);
 	}
 
 	if (*ch1 != ESCAPE)
@@ -365,6 +433,12 @@ DROP                     x or X                 m or M
 	cout << "\n\nPress any key to go back to menu";
 	char ch = _getch();
 
-
 }
 
+void Game::deletePlayers()
+{
+	if (p1)
+		delete p1;
+	if (p2)
+		delete p2;
+}

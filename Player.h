@@ -8,12 +8,13 @@
 class Player {
 
 public:
-	Board board;			
+	Board board;
 	Piece currPiece;
 	bool isPieceHit = true;
 
 	// This function initialise a PLAYER'S board
 	void setBoard() { this->board.initBoard(); }
+	virtual void alterMove(char* ch, char input) = 0;
 };
 
 #endif

@@ -7,7 +7,6 @@
 #include <conio.h>
 #include "GameConfig.h"
 
-using namespace std;
 
 constexpr int DOWN = 10;
 

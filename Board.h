@@ -8,6 +8,8 @@ static constexpr int BOMB_RADIUS = 4;
 
 class Board 
 {
+	char board[GameConfig::GAME_HEIGHT][GameConfig::GAME_WIDTH]; // move to private. use get() and set()
+
 	bool isRowFull(const int row) const;
 	void shiftRowsDown(const int startRow);
 
@@ -16,7 +18,8 @@ class Board
 	int getMax(const int a, const int b) const { return (a > b) ? a : b; }
 	int getMin(const int a, const int b) const { return (a < b) ? a : b; }
 public:
-	char board[GameConfig::GAME_HEIGHT][GameConfig::GAME_WIDTH]; // move to private. use get() and set()
+
+	char getBoardPoint(const int row, const int col) const { return board[row][col]; }
 
 	void initBoard();
 	void clearRows(const Piece& piece);

@@ -88,7 +88,7 @@ void Piece::moveRight(const Board& board)
 	bool checkRight = true;
 	for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
 	{
-		if (tetrimino[i].getX() == GameConfig::GAME_WIDTH - 1 || board.board[tetrimino[i].getY() + 1][tetrimino[i].getX() + 1] == GameConfig::FILLED_CELL)
+		if (tetrimino[i].getX() == GameConfig::GAME_WIDTH - 1 || board.getBoardPoint(tetrimino[i].getY() + 1, tetrimino[i].getX() + 1) == GameConfig::FILLED_CELL)
 			checkRight = false;
 	}
 	if (checkRight == true)
@@ -106,7 +106,7 @@ void Piece::moveleft(const Board& board)
 	bool checkLeft = true;
 	for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
 	{
-		if (tetrimino[i].getX() == 0 || board.board[tetrimino[i].getY() + 1][tetrimino[i].getX() - 1] == GameConfig::FILLED_CELL)
+		if (tetrimino[i].getX() == 0 || board.getBoardPoint(tetrimino[i].getY() + 1, tetrimino[i].getX() - 1) == GameConfig::FILLED_CELL)
 			checkLeft = false;
 	}
 	if (checkLeft == true)
@@ -137,7 +137,7 @@ void Piece::rotateClockwise(const Board& board)
 			}
 
 			// Check collision with other pieces in board
-			if (board.board[newY + 1][newX + 1] == GameConfig::FILLED_CELL)
+			if (board.getBoardPoint(newY + 1,newX + 1 )== GameConfig::FILLED_CELL)
 			{
 				return;
 			}
@@ -171,7 +171,7 @@ void Piece::rotateCounterClockwise(const Board& board)
 			}
 
 			// Check collision with other pieces in board
-			if (board.board[newY + 1][newX + 1] == GameConfig::FILLED_CELL)
+			if (board.getBoardPoint(newY + 1, newX + 1) == GameConfig::FILLED_CELL)
 			{
 				return;
 			}

@@ -1,5 +1,7 @@
 #include "General.h"
 
+using namespace std; 
+
 // Used for printing the game
 void gotoxy(const int x, const int y)
 {
