@@ -80,7 +80,7 @@ int Piece::setPieceType() {
 	if (number < 5)
 		return B;
 	else
-		return (number - 5) % GameConfig::NUMBER_OF_PIECE_TYPE;
+		return (number) % GameConfig::NUMBER_OF_PIECE_TYPE;
 }
 // This function cheks and moves a piece right on the board
 void Piece::moveRight(const Board& board)
@@ -121,7 +121,7 @@ void Piece::moveleft(const Board& board)
 // This function checks and rotates a piece clockwise
 void Piece::rotateClockwise(const Board& board)
 {
-	if (pieceType != O || pieceType != B)
+	if (pieceType != O && pieceType != B)
 	{
 		Point center = tetrimino[1];
 
@@ -155,7 +155,7 @@ void Piece::rotateClockwise(const Board& board)
 // This function checks and rotates a piece counter clockwise
 void Piece::rotateCounterClockwise(const Board& board)
 {
-	if (pieceType != O || pieceType != B)
+	if (pieceType != O && pieceType != B)
 	{
 		Point center = tetrimino[1];
 

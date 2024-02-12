@@ -5,11 +5,13 @@
 #include <process.h> // for system
 #include <iostream>
 #include <conio.h>
+#include "GameConfig.h"
 
 using namespace std;
 
 constexpr int DOWN = 10;
 
+void drawPoint(const int x, const int y, int backColor);
 void gotoxy(const int, const int);
 void clrscr();
 

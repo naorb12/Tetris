@@ -30,13 +30,14 @@ constexpr char VERTICAL_BORDER = '|';
 
 
 class Game {
-		
+
 	Player p1;
 	Player p2;
 	bool winner = false;
-	
+
 	void drawBorders() const;
 	bool checkHit(const Player& player) const;
+	void performHit(Player& player, const int playerOffset);
 	bool checkWinner() const;
 	int printMenu(bool gameFinished) const;
 	void printInstructions() const;
