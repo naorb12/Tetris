@@ -46,13 +46,13 @@ bool Game::process()
 		{
 			for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
 				drawPoint(p1.currPiece.tetrimino[i].getX() + GameConfig::PIECE_X, p1.currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
-			performHit(p1);
+			performHit(p1, 0);
 		}
 		if (p2.isPieceHit == true)
 		{
 			for (int i = 0; i < GameConfig::PIECE_SIZE; i++)
 				drawPoint(p2.currPiece.tetrimino[i].getX() + GameConfig::P2_X + GameConfig::PIECE_X, p2.currPiece.tetrimino[i].getY(), BACKGROUND_INTENSITY);
-			performHit(p2);
+			performHit(p2, GameConfig::P2_X);
 		}
 
 		movePieces(&ch1, &ch2);
@@ -64,10 +64,10 @@ bool Game::process()
 	return winner;
 }
 
-void Game::performHit(Player& player)
+void Game::performHit(Player& player, const int playerOffset)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-	player.board.insertPiece(player.currPiece);
+	player.board.insertPiece(player.currPiece, playerOffset);
 	player.board.clearRows(player.currPiece);
 	player.currPiece.buildpiece();
 }

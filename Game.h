@@ -37,7 +37,7 @@ class Game {
 
 	void drawBorders() const;
 	bool checkHit(const Player& player) const;
-	void performHit(Player& player);
+	void performHit(Player& player, const int playerOffset);
 	bool checkWinner() const;
 	int printMenu(bool gameFinished) const;
 	void printInstructions() const;

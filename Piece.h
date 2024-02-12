@@ -19,11 +19,15 @@ class Piece
 private:
 	int pieceType;
 	int setPieceType();
+	
 public:
 	Point tetrimino[GameConfig::PIECE_SIZE];
 
 	//set piece
 	void buildpiece();
+
+	//get type
+	int getPieceType() const { return pieceType; }
 
 	//move piece
 	void moveRight(const Board& board);
